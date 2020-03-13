@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 import argparse
 from PyPDF2 import PdfFileReader, PdfFileWriter
 import os
@@ -6,6 +8,7 @@ import sys
 
 log = logging.getLogger(__name__)
 logging.basicConfig(level=logging.INFO, stream=sys.stdout)
+
 
 def merge_pdfs(paths, output):
     """
@@ -17,14 +20,12 @@ def merge_pdfs(paths, output):
         pdf_reader = PdfFileReader(path)
         for page in range(pdf_reader.getNumPages()):
             # Add each page to the writer object
-            log.debug(f'Adding page {page} of {path}.')
+            log.debug(f"Adding page {page} of {path}.")
             pdf_writer.addPage(pdf_reader.getPage(page))
 
     # Write out the merged PDF
-    with open(output, 'wb') as out:
+    with open(output, "wb") as out:
         pdf_writer.write(out)
-
-
 
 
 def get_arg_parser():
@@ -40,14 +41,27 @@ def get_arg_parser():
         default=".",
         help="The directory to look in for pdfs to merge",
     )
-    parser.add_argument("-o", "--output", type=str, required=False, default="out.pdf", help="The name of the output file.")
+    parser.add_argument(
+        "-o",
+        "--output",
+        type=str,
+        required=False,
+        default="out.pdf",
+        help="The name of the output file.",
+    )
 
     return parser
+
 
 if __name__ == "__main__":
     args = get_arg_parser().parse_args()
 
-    paths = [os.path.join(args.directory, file) for file in os.listdir(args.directory) if '.pdf' in file and file != args.output]
+    directory = os.path.expandvars(os.path.expanduser(args.directory))
+    paths = [
+        os.path.join(directory, file)
+        for file in os.listdir(directory)
+        if ".pdf" in file and file != args.output
+    ]
     log.info(f"Paths to merge: {paths}")
     if paths:
         merge_pdfs(paths, output=args.output)
