@@ -1,2 +1,7 @@
 *.pdf
 .idea/
+build/
+dist/
+*.DS_Store
+__pycache__/
+*.spec

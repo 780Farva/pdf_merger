@@ -57,11 +57,11 @@ if __name__ == "__main__":
     args = get_arg_parser().parse_args()
 
     directory = os.path.expandvars(os.path.expanduser(args.directory))
-    paths = [
+    paths = sorted([
         os.path.join(directory, file)
         for file in os.listdir(directory)
         if ".pdf" in file and file != args.output
-    ]
+    ])
     log.info(f"Paths to merge: {paths}")
     if paths:
         merge_pdfs(paths, output=args.output)
